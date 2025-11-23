@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOCKCHAIN SIMULATOR | Web 3.0 & Consensus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background-animation"></div>
+
+    <!-- Interactive Cursor Glow Effect -->
+    <div id="cursor-glow"></div>
+
+    <header class="navbar">
+        <div class="logo">BLOCKCHAIN SIMULATOR</div>
+        <nav>
+            <button id="tab-home" class="active">Home</button>
+            <button id="tab-about">About Me</button>
+            <button id="tab-hash">Hash</button>
+            <button id="tab-block">Block</button>
+            <button id="tab-chain">Block Chain</button>
+            <button id="tab-ecc">ECC Signature</button>
+            <button id="tab-consensus">Konsensus</button>
+        </nav>
+    </header>
+
+    <main class="content-container">
+
+        <div id="page-home" class="page active">
+            <div class="home-grid-layout">
+                <section class="hero-section scroll-animate">
+                    <div class="hero-content">
+                        <h1>Selamat Datang di Website Belajar Blockchain 🔗</h1>
+                        <p>Simulasi interaktif ini dirancang untuk memvisualisasikan konsep inti Teknologi Blockchain, mulai dari <em>Hashing</em>, <em>Proof-of-Work</em>, hingga mekanisme <em>Konsensus</em> yang menjamin keamanan data.</p>
+                        <p class="hero-subtext">Jelajahi setiap modul untuk memahami bagaimana blok saling terhubung, transaksi diamankan, dan integritas data dijaga dalam jaringan terdesentralisasi.</p>
+                        <button id="start-simulation-btn" class="mine">Mulai Jelajahi <i class="fa-solid fa-arrow-right"></i></button>
+                        <div id="datetime" class="timestamp"></div>
+                    </div>
+                </section>
+                
+                <div class="main-content scroll-animate">
+                    <section class="info-section">
+                        <h3>📘 Dasar Teori Singkat</h3>
+                        <p>Blockchain adalah teknologi buku besar digital terdistribusi yang mencatat transaksi secara aman dan transparan. Setiap "blok" berisi sejumlah transaksi, dan setiap blok baru terhubung secara kriptografis ke blok sebelumnya, membentuk "rantai". Keamanan ini diperkuat oleh <strong>hashing</strong> (mengubah data menjadi string unik) dan mekanisme <strong>konsensus</strong> (kesepakatan bersama dalam jaringan).</p>
+                    </section>
+                    <section class="info-section">
+                        <h3>🚀 Petunjuk Penggunaan</h3>
+                        <p>Selamat datang di simulator blockchain! Gunakan menu navigasi di atas untuk menjelajahi berbagai konsep inti. Setiap halaman dirancang untuk menjadi simulasi interaktif:</p>
+                        <ul>
+                            <li><strong>Input Data:</strong> Coba ubah data di area teks untuk melihat bagaimana sistem merespons secara *real-time*.</li>
+                            <li><strong>Tombol Aksi:</strong> Klik tombol seperti "Mine", "Sign", atau "Kirim" untuk memicu algoritma yang relevan.</li>
+                            <li><strong>Amati Hasil:</strong> Perhatikan bagaimana hash berubah, nonce ditemukan, atau bagaimana rantai blok divalidasi.</li>
+                        </ul>
+                        <p>Untuk penjelasan lebih detail tentang setiap menu, lihat bagian "Penjelasan Menu" di samping kanan.</p>
+                    </section>
+                </div>
+
+                <div class="sidebar-content scroll-animate">
+                    <section class="info-section">
+                        <h3>🛠️ Penjelasan Menu</h3>
+                        <div class="accordion">
+                            <button class="accordion-button"><i class="fa-solid fa-hashtag"></i> Hash</button>
+                            <div class="accordion-panel"><p>Halaman ini mendemonstrasikan fungsi hash <strong>SHA-256</strong>. Ketik apa pun di area input, dan Anda akan melihat bagaimana output hash berubah total bahkan dengan perubahan terkecil sekalipun (efek longsoran).</p></div>
+                            <button class="accordion-button"><i class="fa-solid fa-cube"></i> Block</button>
+                            <div class="accordion-panel"><p>Simulasi <strong>Proof-of-Work</strong>. Klik "Mulai Mining" untuk mencari "nonce" (angka acak) yang, ketika digabungkan dengan data blok, menghasilkan hash yang diawali dengan jumlah angka nol tertentu (kesulitan).</p></div>
+                            <button class="accordion-button"><i class="fa-solid fa-link"></i> Block Chain</button>
+                            <div class="accordion-panel"><p>Visualisasi rantai blok. Setiap blok menyimpan hash dari blok sebelumnya. Jika data di satu blok diubah, hash-nya akan berubah, dan semua blok berikutnya menjadi tidak valid. Klik "Mine" untuk memperbaiki blok.</p></div>
+                            <button class="accordion-button"><i class="fa-solid fa-signature"></i> ECC Signature</button>
+                            <div class="accordion-panel"><p>Demonstrasi tanda tangan digital menggunakan <strong>Elliptic Curve Cryptography</strong>. Anda dapat membuat pasangan kunci (private & public), menandatangani pesan dengan kunci privat, dan memverifikasinya menggunakan kunci publik.</p></div>
+                            <button class="accordion-button"><i class="fa-solid fa-users-gear"></i> Konsensus</button>
+                            <div class="accordion-panel"><p>Simulasi bagaimana jaringan terdesentralisasi (3 node) mencapai kesepakatan. Jika satu node memiliki data yang berbeda (korup), mekanisme konsensus akan mengidentifikasi data mayoritas yang benar dan menyalinnya ke node yang salah.</p></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-about" class="page">
+            <div class="about-grid-layout">
+                <div class="profile-card scroll-animate">
+                    <img src="fotoluby.jpg" alt="Foto Profil" class="profile-photo">
+                    <div class="profile-info">
+                        <h3>Maria Lubyaska Lietamenta Purwa (Luby)</h3>
+                        <p class="role-desc">Individu yang senantiasa <strong>penasaran</strong> dan bersemangat untuk <strong>menjelajahi hal-hal baru</strong>. Saya memiliki hasrat yang kuat untuk belajar dan secara konsisten mendorong diri sendiri untuk memberikan yang terbaik dalam setiap hal yang saya lakukan.</p>
+                        <p class="role-desc">Berkembang pesat di lingkungan yang <strong>dinamis</strong> dan senang mengambil <strong>tantangan baru</strong>. Sebagai seorang <strong>ENTP-T</strong> dan berzodiak <strong>Gemini</strong>, saya secara alami <strong>fleksibel, adaptif, dan penuh energi</strong> — selalu siap untuk berpikir <em>out of the box</em> dan merangkul perubahan.</p>
+                    </div>
+                </div>
+
+                <!-- Riwayat Pendidikan (Kolom Kiri, Baris Atas) -->
+                <section class="education-history scroll-animate">
+                    <h4><i class="fa-solid fa-graduation-cap"></i> Riwayat Pendidikan</h4>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h5>Politeknik Elektronika Negeri Surabaya (PENS)</h5>
+                                <p>D4 - Teknologi Rekayasa Multimedia</p>
+                            </div>
+                            <div class="timeline-year">2023 - Sekarang</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <h5>SMK Negeri 6 Surakarta</h5>
+                                <p>Multimedia</p>
+                            </div>
+                            <div class="timeline-year">2020 - 2023</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Keterampilan (Kolom Kanan, Baris Atas) -->
+                <section class="skills-section scroll-animate">
+                    <h4><i class="fa-solid fa-code"></i> Keterampilan & Teknologi</h4>
+                    <div class="skills-grid">
+                        <div class="skill-card"><i class="fa-brands fa-html5"></i> HTML</div>
+                        <div class="skill-card"><i class="fa-brands fa-css3-alt"></i> CSS</div>
+                        <div class="skill-card"><i class="fa-brands fa-js"></i> JavaScript</div>
+                        <div class="skill-card"><i class="fa-brands fa-react"></i> React</div>
+                        <div class="skill-card"><i class="fa-brands fa-node-js"></i> Node.js</div>
+                        <div class="skill-card"><i class="fa-brands fa-python"></i> Python</div>
+                        <div class="skill-card"><i class="fa-brands fa-figma"></i> Figma</div>
+                        <div class="skill-card"><i class="fa-solid fa-pen-nib"></i> Adobe Illustrator</div>
+                        <div class="skill-card"><i class="fa-solid fa-pen-ruler"></i> Corel Draw</div>
+                        <div class="skill-card"><i class="fa-solid fa-shapes"></i> Blender</div>
+                    </div>
+                </section>
+
+                <!-- Kontak (Kolom Kiri, Baris Bawah) -->
+                <div class="contact-form scroll-animate">
+                    <h4><i class="fa-solid fa-envelope"></i> Kirim Pesan Cepat</h4>
+                    <label for="contact-name">Nama</label>
+                    <input type="text" id="contact-name" placeholder="Nama Anda">
+                    <label for="contact-email">Email</label>
+                    <input type="email" id="contact-email" placeholder="Email Anda">
+                    <label for="contact-message">Pesan</label>
+                    <textarea id="contact-message" rows="5" placeholder="Tulis pesan Anda di sini..."></textarea>
+                    <button id="btn-send-message">Kirim Pesan</button>
+                </div>
+
+                <!-- Peta (Kolom Kanan, Baris Bawah) -->
+                <div class="map-container scroll-animate">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3957.692033770276!2d112.79156731477496!3d-7.275841794748502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fa10ea2ae883%3A0xbe22c55d60ef09c7!2sPoliteknik%20Elektronika%20Negeri%20Surabaya!5e0!3m2!1sid!2sid!4v1635999999999!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-hash" class="page">
+            <h2 class="page-title">SHA-256 Hash Generator</h2>
+            <label for="hash-input">Data Input:</label>
+            <textarea id="hash-input" rows="5" placeholder="Masukkan teks untuk di-hash..."></textarea>
+            <label>Output SHA-256 Hash:</label>
+            <div id="hash-output" class="output hash-output"></div>
+        </div>
+
+        <div id="page-block" class="page">
+            <h2 class="page-title">Simulasi Single Block (Proof-of-Work)</h2>
+            <div class="block-controls">
+                <div>
+                    <label for="block-number">Nomor Block:</label>
+                    <input id="block-number" type="number" min="0" value="0" readonly />
+                    <label for="block-data">Data Transaksi:</label>
+                    <textarea id="block-data" rows="4" placeholder="Data transaksi/pesan..."></textarea>
+                </div>
+                <div>
+                    <label for="block-timestamp">Timestamp:</label>
+                    <input id="block-timestamp" type="text" readonly />
+                    <label for="block-nonce">Nonce (Target Hash 0000):</label>
+                    <input id="block-nonce" type="text" maxlength="9" />
+                </div>
+            </div>
+            
+            <label>Hash (Harus dimulai dengan "0000"):</label>
+            <div id="block-hash" class="output hash-output"></div>
+            
+            <div class="mine-area">
+                <button id="btn-mine" class="mine"><i class="fa-solid fa-play"></i><span>Mulai Mining</span></button>
+                <div class="speed-control-group">
+                    <label for="speed-control">Kecepatan Mining:</label>
+                    <select id="speed-control">
+                        <option value="1">Normal (1x)</option>
+                        <option value="10">10x Lebih Cepat</option>
+                        <option value="50">50x Lebih Cepat</option>
+                    </select>
+                </div>
+            </div>
+            <div id="mining-status" class="status">
+                <!-- Status content will be injected by JS -->
+            </div>
+        </div>
+
+        <div id="page-chain" class="page">
+            <h2 class="page-title">Block Chain Visualization</h2>
+            <div class="chain-controls">
+                <button id="btn-add-block"><i class="fa-solid fa-plus"></i><span>Tambah Blok Baru</span></button>
+            </div>
+            <div id="blockchain" class="chain-container">
+                </div>
+        </div>
+
+        <div id="page-ecc" class="page">
+            <h2 class="page-title">Verifikasi ECC Digital Signature</h2>
+            
+            <div class="ecc-grid-layout">
+                <!-- Step 1: Key Generation -->
+                <div class="ecc-step">
+                    <h3><span class="step-number">1</span> Buat Key Pair</h3>
+                    <button id="btn-generate-key"><i class="fa-solid fa-key"></i><span>Generate Key Pair</span></button>
+                    <p class="hint">Public & Private Key dapat diubah untuk percobaan.</p>
+                    <label>Private Key (Hex 256-bit):</label>
+                    <textarea id="ecc-private" rows="3"></textarea>
+                    <label>Public Key (Kompresi, Hex):</label>
+                    <textarea id="ecc-public" rows="3"></textarea>
+                </div>
+
+                <!-- Step 2: Signing -->
+                <div class="ecc-step">
+                    <h3><span class="step-number">2</span> Buat Tanda Tangan</h3>
+                    <label>Pesan yang akan ditandatangani:</label>
+                    <textarea id="ecc-message" rows="3" placeholder="Masukkan pesan yang akan ditandatangani..."></textarea>
+                    <button id="btn-sign"><i class="fa-solid fa-signature"></i><span>Sign Message</span></button>
+                    <label>Hasil Signature (DER hex):</label>
+                    <textarea id="ecc-signature" rows="3" readonly></textarea>
+                </div>
+
+                <!-- Step 3: Verification -->
+                <div class="ecc-step">
+                    <h3><span class="step-number">3</span> Verifikasi</h3>
+                    <button id="btn-verify"><i class="fa-solid fa-check-circle"></i><span>Verify Signature</span></button>
+                    <div id="ecc-verify-result" class="output verify-output"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-consensus" class="page">
+            <h2 class="page-title">Simulasi Mekanisme Konsensus (3 Nodes)</h2>
+            <p>Skenario: 3 User bertransaksi. Data yang diubah pada salah satu <em>chain</em> akan dideteksi dan diperbaiki oleh mayoritas.</p>
+            
+            <div class="wallets">
+                <div class="wallet" data-user="A">
+                    <h3>User A</h3>
+                    <div class="balance">Saldo: <span id="saldo-A">100</span> koin</div>
+                    <label>Penerima:</label>
+                    <select id="receiver-A">
+                        <option value="B">User B</option>
+                        <option value="C">User C</option>
+                    </select>
+                    <label>Jumlah:</label>
+                    <input id="amount-A" type="number" min="1" value="10" />
+                    <button id="send-A" class="wallet-send">Kirim</button>
+                </div>
+                <div class="wallet" data-user="B">
+                    <h3>User B</h3>
+                    <div class="balance">Saldo: <span id="saldo-B">100</span> koin</div>
+                    <label>Penerima:</label>
+                    <select id="receiver-B">
+                        <option value="A">User A</option>
+                        <option value="C">User C</option>
+                    </select>
+                    <label>Jumlah:</label>
+                    <input id="amount-B" type="number" min="1" value="10" />
+                    <button id="send-B" class="wallet-send">Kirim</button>
+                </div>
+                <div class="wallet" data-user="C">
+                    <h3>User C</h3>
+                    <div class="balance">Saldo: <span id="saldo-C">100</span> koin</div>
+                    <label>Penerima:</label>
+                    <select id="receiver-C">
+                        <option value="A">User A</option>
+                        <option value="B">User B</option>
+                    </select>
+                    <label>Jumlah:</label>
+                    <input id="amount-C" type="number" min="1" value="10" />
+                    <button id="send-C" class="wallet-send">Kirim</button>
+                </div>
+            </div>
+            
+            <div class="mempool-area">
+                <label>Mempool (Pending Transactions):</label>
+                <textarea id="mempool" rows="3" placeholder="Setiap transaksi di baris baru. Contoh: A -> B:10"></textarea>
+            </div>
+            
+            <div class="consensus-controls">
+                <button id="btn-mine-all"><i class="fa-solid fa-person-digging"></i><span>Mine Semua Transaksi</span></button>
+                <button id="btn-verify-consensus"><i class="fa-solid fa-shield-halved"></i><span>Verify Chains</span></button>
+                <button id="btn-consensus"><i class="fa-solid fa-users-gear"></i><span>Jalankan Consensus</span></button>
+            </div>
+            
+            <h3 class="chain-header">Blockchain Tiap User (Node)</h3>
+            <div id="chains">
+                <h4>Database Node A</h4>
+                <div id="chain-A" class="chain-row"></div>
+                <h4>Database Node B</h4>
+                <div id="chain-B" class="chain-row"></div>
+                <h4>Database Node C</h4>
+                <div id="chain-C" class="chain-row"></div>
+            </div>
+        </div>
+    
+    </main>
+
+    <footer id="footer">
+        <div class="footer-left">
+            <span class="copyright">© 2025 Teknologi Rekayasa Multimedia (TRM) PENS.</span>
+        </div>
+        <div class="footer-right">
+            <div class="social-links">
+                <a href="mailto:lubyaska.lietamenta@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                <a href="https://github.com/lubyaska" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/lubyaska" target="_blank" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="https://www.instagram.com/lubyaskxyz" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+            <span class="made-by">Made by Lubyaska.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/elliptic/6.5.4/elliptic.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
