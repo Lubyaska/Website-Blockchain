@@ -666,3 +666,58 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+// ================== CONTACT FORM HANDLER ==================
+document.getElementById('btn-send-message').addEventListener('click', async () => {
+    const nama = document.getElementById('contact-name').value.trim();
+    const email = document.getElementById('contact-email').value.trim();
+    const pesan = document.getElementById('contact-message').value.trim();
+
+    if (!nama || !email || !pesan) {
+        alert('Semua field harus diisi!');
+        return;
+    }
+
+    const btn = document.getElementById('btn-send-message');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+    try {
+        // use explicit Vercel route for serverless function
+        const response = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nama, email, pesan })
+        });
+
+        const result = await response.json();
+
+        const statusEl = document.getElementById('contact-status');
+        if (result.success) {
+            if (statusEl) {
+                statusEl.className = 'contact-status success';
+                statusEl.textContent = '✅ Pesan berhasil dikirim. Terima kasih!';
+            } else {
+                alert('✅ Pesan berhasil dikirim ke email saya!');
+            }
+            document.getElementById('contact-name').value = '';
+            document.getElementById('contact-email').value = '';
+            document.getElementById('contact-message').value = '';
+        } else {
+            if (statusEl) {
+                statusEl.className = 'contact-status error';
+                statusEl.textContent = '❌ Gagal mengirim: ' + (result.message || 'Unknown');
+            } else {
+                alert('❌ Gagal mengirim pesan: ' + result.message);
+            }
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Terjadi kesalahan: ' + error.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Kirim Pesan';
+    }
+});

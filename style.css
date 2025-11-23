@@ -106,6 +106,27 @@ body {
     }
 }
 
+/* Contact form status */
+.contact-status {
+    margin-top: 12px;
+    font-size: 0.95em;
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.25s ease;
+}
+.contact-status.success {
+    color: #064e3b; /* dark green */
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.contact-status.error {
+    color: #7f1d1d; /* dark red */
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.12);
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
