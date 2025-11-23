@@ -19,20 +19,23 @@ Website-Blockchain/
 
 ## 🚀 Deploy ke Vercel (mengirim email)
 
-Project ini bisa dideploy ke Vercel. Untuk mengirim email dari form pada deployment Vercel kita menggunakan serverless function di `api/send-email.js` (nodemailer).
+Project ini bisa dideploy ke Vercel. Untuk mengirim email dari form pada deployment Vercel kita menggunakan serverless function di `api/send-email.js` (Nodemailer / Gmail SMTP).
 
 Langkah singkat:
 
 - Push repository ke GitHub.
 - Buat project baru di Vercel dan hubungkan ke repo tersebut.
 - Di Vercel dashboard -> Project -> Settings -> Environment Variables tambahkan:
-	- `EMAIL_USER` = `lubyaska.lietamenta@gmail.com`
-	- `EMAIL_PASSWORD` = `<app password dari Google>`
+  - `EMAIL_USER` = `lubyaska.lietamenta@gmail.com`
+  - `EMAIL_PASSWORD` = `<app password dari Google>`
 
-Catatan:
-- Gunakan **App Password** dari Google (https://myaccount.google.com/apppasswords). App Password diperlukan jika akun menggunakan 2FA.
-- Vercel menjalankan fungsi sebagai serverless — tidak ada server Express yang selalu hidup. Form di frontend melakukan POST ke `/api/send-email` yang dijalankan sebagai function.
-- Untuk beban produksi atau pengiriman email skala besar, pertimbangkan provider email transactional (SendGrid, Mailgun, Postmark) karena batas dan deliverability.
+Catatan penting tentang Gmail:
+- Gmail memblokir akses aplikasi yang tidak aman. Jika akun Anda menggunakan 2-Step Verification (2FA), buat **App Password** di https://myaccount.google.com/apppasswords dan pakai nilai itu sebagai `EMAIL_PASSWORD`.
+- Jika akun tidak menggunakan 2FA, Google telah menonaktifkan opsi "Less secure apps" untuk banyak akun — rekomendasi aman adalah mengaktifkan 2FA dan membuat App Password.
+- Karena Anda memakai SMTP, pastikan `EMAIL_USER` dan `EMAIL_PASSWORD` diset di Environment Variables Vercel, lalu redeploy project.
+
+Alternatif:
+- Jika Anda ingin solusi yang lebih stabil dan khusus untuk deployment serverless, saya bisa bantu beralih ke provider transactional (SendGrid, Mailgun). Namun Anda meminta `nodemailer`, jadi default sekarang menggunakan Nodemailer/Gmail.
 
 ## 📝 Deskripsi
 

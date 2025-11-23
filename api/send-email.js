@@ -1,5 +1,5 @@
-// Switched to SendGrid for reliable delivery in serverless environments.
-const sendgrid = require('@sendgrid/mail');
+// Nodemailer implementation for sending email via SMTP (Gmail).
+const nodemailer = require('nodemailer');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ success: false, message: 'Method Not Allowed' });
@@ -10,17 +10,21 @@ module.exports = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Semua field harus diisi' });
     }
 
-    const apiKey = process.env.SENDGRID_API_KEY;
-    const from = process.env.SENDGRID_FROM || process.env.EMAIL_USER;
-    if (!apiKey || !from) {
-      return res.status(500).json({ success: false, message: 'SendGrid not configured (SENDGRID_API_KEY or SENDGRID_FROM missing)' });
+    const user = process.env.EMAIL_USER;
+    const pass = process.env.EMAIL_PASSWORD;
+    if (!user || !pass) {
+      return res.status(500).json({ success: false, message: 'Email credentials are not configured (EMAIL_USER or EMAIL_PASSWORD missing)' });
     }
 
-    sendgrid.setApiKey(apiKey);
+    // Create transporter using Gmail SMTP. For accounts with 2FA, use an App Password.
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+    });
 
-    const msg = {
-      to: from,
-      from: from,
+    const mailOptions = {
+      from: `${nama} <${user}>`,
+      to: user, // send to owner's email
       subject: `Pesan dari ${nama} (Website Blockchain)`,
       html: `
         <h3>Pesan Baru dari Website Blockchain</h3>
@@ -31,10 +35,10 @@ module.exports = async (req, res) => {
       `,
     };
 
-    await sendgrid.send(msg);
+    await transporter.sendMail(mailOptions);
     return res.status(200).json({ success: true, message: 'Pesan terkirim' });
   } catch (err) {
-    console.error('send-email (sendgrid) error:', err);
+    console.error('send-email (nodemailer) error:', err);
     const message = (err && err.message) || 'Internal error';
     return res.status(500).json({ success: false, message });
   }
