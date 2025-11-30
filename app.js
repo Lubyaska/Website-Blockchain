@@ -190,7 +190,14 @@ function renderChain() {
             ta.addEventListener('change', (e) => onChainDataChange(i, e.target.value));
         }
         const btnMine = blockEl.querySelector('button.mine');
-        if (btnMine) btnMine.addEventListener('click', () => mineChainBlock(i));
+        if (btnMine) btnMine.addEventListener('click', (e) => {
+            // ensure latest textarea value is captured (avoid relying on 'change' having fired)
+            if (ta) {
+                blocks[i].data = ta.value;
+            }
+            // start mining
+            mineChainBlock(i);
+        });
         blockElements.push(blockEl);
     });
 
