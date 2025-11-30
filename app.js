@@ -273,9 +273,16 @@ window.mineChainBlock = function (i) {
                 if (blocks[i]) {
                     blocks[i].invalid = false;
                 }
+                // update block model with mined values
+                blocks[i].nonce = blk.nonce;
+                blocks[i].hash = blk.hash;
+                blocks[i].timestamp = blk.timestamp;
                 renderChain();
-                // Update subsequent blocks (propagate previousHash etc.)
-                onChainDataChange(i, blk.data);
+                // update next block's previousHash so UI reflects the new chain
+                if (blocks[i + 1]) {
+                    blocks[i + 1].previousHash = blk.hash;
+                    renderChain();
+                }
                 return;
             }
         }
