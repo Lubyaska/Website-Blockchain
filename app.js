@@ -174,15 +174,23 @@ function renderChain() {
         blockEl.id = `chain-block-${i}`;
         blockEl.innerHTML = `
             <h3><i class="fa-solid fa-cube"></i> Block #${blk.index}</h3>
-            <label>Prev Hash:</label><div class="output hash-output">${blk.previousHash}</div>
-            <label>Data:</label><textarea rows="2" onchange="onChainDataChange(${i}, this.value)">${blk.data}</textarea>
-            <button onclick="mineChainBlock(${i})" class="mine"><i class="fa-solid fa-person-digging"></i> Mine</button>
+            <label>Prev Hash:</label><div class="output hash-output" id="prev-${i}">${blk.previousHash}</div>
+            <label>Data:</label><textarea rows="2" id="data-${i}"></textarea>
+            <button class="mine"><i class="fa-solid fa-person-digging"></i> Mine</button>
             <div id="status-${i}" class="status"></div>
             <label>Timestamp:</label><div class="output" id="timestamp-${i}">${blk.timestamp}</div>
             <label>Nonce:</label><div class="output" id="nonce-${i}">${blk.nonce}</div>
             <label>Hash:</label><div class="output hash-output" id="hash-${i}">${blk.hash}</div>
         `;
         chainDiv.appendChild(blockEl);
+        // populate textarea value and attach listeners programmatically
+        const ta = blockEl.querySelector(`#data-${i}`);
+        if (ta) {
+            ta.value = blk.data || "";
+            ta.addEventListener('change', (e) => onChainDataChange(i, e.target.value));
+        }
+        const btnMine = blockEl.querySelector('button.mine');
+        if (btnMine) btnMine.addEventListener('click', () => mineChainBlock(i));
         blockElements.push(blockEl);
     });
 
