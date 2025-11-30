@@ -190,14 +190,18 @@ function renderChain() {
             ta.addEventListener('change', (e) => onChainDataChange(i, e.target.value));
         }
         const btnMine = blockEl.querySelector('button.mine');
-        if (btnMine) btnMine.addEventListener('click', (e) => {
-            // ensure latest textarea value is captured (avoid relying on 'change' having fired)
-            if (ta) {
-                blocks[i].data = ta.value;
-            }
-            // start mining
-            mineChainBlock(i);
-        });
+        if (btnMine) {
+            // Use pointerdown so we capture textarea value BEFORE it loses focus and triggers 'change' which would re-render.
+            btnMine.addEventListener('pointerdown', (e) => {
+                if (ta) {
+                    blocks[i].data = ta.value;
+                }
+            });
+            // Start mining on click (after pointerdown has captured the value).
+            btnMine.addEventListener('click', (e) => {
+                mineChainBlock(i);
+            });
+        }
         blockElements.push(blockEl);
     });
 
@@ -260,7 +264,10 @@ window.mineChainBlock = function (i) {
     const ndiv = document.getElementById(`nonce-${i}`);
     const hdiv = document.getElementById(`hash-${i}`);
     const tdiv = document.getElementById(`timestamp-${i}`);
+    const blockEl = document.getElementById(`chain-block-${i}`);
+    const btnEl = blockEl ? blockEl.querySelector('button.mine') : null;
     status.innerHTML = `<div class="loader"></div><span>Mining...</span>`;
+    if (btnEl) btnEl.disabled = true;
     async function step() {
         const promises = [];
         for (let j = 0; j < batchSize; j++)
@@ -290,6 +297,7 @@ window.mineChainBlock = function (i) {
                     blocks[i + 1].previousHash = blk.hash;
                     renderChain();
                 }
+                if (btnEl) btnEl.disabled = false;
                 return;
             }
         }
