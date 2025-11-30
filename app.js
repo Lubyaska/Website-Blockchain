@@ -86,6 +86,7 @@ document.getElementById("hash-input").addEventListener("input", async (e) => {
 // ================== BLOCK PAGE ==================
 const blockData = document.getElementById("block-data");
 const blockNonce = document.getElementById("block-nonce");
+const blockNumber = document.getElementById("block-number");
 const blockHash = document.getElementById("block-hash");
 const blockTimestamp = document.getElementById("block-timestamp");
 const speedControl = document.getElementById("speed-control");
@@ -95,10 +96,21 @@ blockNonce.addEventListener("input", (e) => {
     updateBlockHash();
 });
 blockData.addEventListener("input", updateBlockHash);
+// allow changing block number to affect the hash
+if (blockNumber) {
+    blockNumber.addEventListener('input', (e) => {
+        // sanitize to integer >= 0
+        const v = parseInt(e.target.value);
+        e.target.value = isNaN(v) || v < 0 ? 0 : v;
+        updateBlockHash();
+    });
+}
 async function updateBlockHash() {
-    const data = blockData.value;
+    const data = blockData.value || "";
     const nonce = blockNonce.value || "0";
-    blockHash.textContent = await sha256(data + nonce);
+    const number = (blockNumber && blockNumber.value) ? blockNumber.value : "0";
+    // short preview hash for the single-block UI (without timestamp)
+    blockHash.textContent = await sha256(number + data + nonce);
 }
 mineButton.addEventListener("click", async () => {
     mineButton.disabled = true;
@@ -123,7 +135,8 @@ mineButton.addEventListener("click", async () => {
     async function mineStep() {
         const promises = [];
         for (let i = 0; i < batchSize; i++) {
-            promises.push(sha256(data + timestamp + (nonce + i)));
+            const number = (blockNumber && blockNumber.value) ? blockNumber.value : "0";
+            promises.push(sha256(number + data + timestamp + (nonce + i)));
         }
         const results = await Promise.all(promises);
         for (let i = 0; i < results.length; i++) {
