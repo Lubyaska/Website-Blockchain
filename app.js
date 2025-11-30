@@ -169,7 +169,8 @@ function renderChain() {
 
     blocks.forEach((blk, i) => {
         const blockEl = document.createElement("div");
-        blockEl.className = "blockchain-block";
+        const cls = "blockchain-block" + (blk.invalid ? " invalid" : "");
+        blockEl.className = cls;
         blockEl.id = `chain-block-${i}`;
         blockEl.innerHTML = `
             <h3><i class="fa-solid fa-cube"></i> Block #${blk.index}</h3>
@@ -189,6 +190,8 @@ function renderChain() {
     for (let i = 0; i < blockElements.length - 1; i++) {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svg.setAttribute("class", "chain-connector");
+        // mark connector invalid if the following block is invalid
+        if (blocks[i + 1] && blocks[i + 1].invalid) svg.classList.add('invalid');
         svg.innerHTML = `<line x1="0" y1="50%" x2="100%" y2="50%" />`;
         chainDiv.insertBefore(svg, blockElements[i + 1]);
     }
@@ -224,11 +227,12 @@ window.onChainDataChange = function (i, val) {
     }
     // Re-render to update hashes and invalidate subsequent blocks
     renderChain();
-    // Mark this block and subsequent ones as tampered
+    // Mark this block and subsequent ones as tampered in the data model
     for (let j = i; j < blocks.length; j++) {
-        document.getElementById(`chain-block-${j}`).classList.add('invalid');
-        document.querySelector(`#chain-block-${j} + .chain-connector`)?.classList.add('invalid');
+        blocks[j].invalid = true;
     }
+    // Re-render to apply invalid styles via renderChain
+    renderChain();
 };
 window.mineChainBlock = function (i) {
     const blk = blocks[i];
@@ -261,8 +265,11 @@ window.mineChainBlock = function (i) {
                 tdiv.textContent = blk.timestamp;
                 const dur = ((performance.now() - t0) / 1000).toFixed(3);
                 status.innerHTML = `<i class="fa-solid fa-check-circle"></i><span>Selesai! (${dur}s)</span>`;
-                document.getElementById(`chain-block-${i}`).classList.remove('invalid');
-                document.querySelector(`#chain-block-${i} + .chain-connector`)?.classList.remove('invalid');
+                // clear invalid flag in data model and re-render
+                if (blocks[i]) {
+                    blocks[i].invalid = false;
+                }
+                renderChain();
                 onChainDataChange(i, blk.data); // Trigger update for subsequent blocks
                 return;
             }
