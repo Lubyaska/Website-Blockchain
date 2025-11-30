@@ -206,9 +206,12 @@ function renderChain() {
                 if (ta) {
                     blocks[i].data = ta.value;
                 }
-                // start mining immediately if not already mining
+                // mark mining immediately so blur/change handlers won't reset state
                 if (!blocks[i].mining) {
-                    // prevent default to avoid double activation
+                    blocks[i].mining = true;
+                    // disable button visually
+                    btnMine.disabled = true;
+                    // prevent default focus/blur side-effects
                     e.preventDefault();
                     mineChainBlock(i);
                 }
