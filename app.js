@@ -206,6 +206,8 @@ function addChainBlock() {
         timestamp: "",
         nonce: 0,
         hash: "",
+        invalid: false,
+        invalidTimer: null,
     };
     blocks.push(blk);
     renderChain(); // Re-render the entire chain
@@ -227,12 +229,22 @@ window.onChainDataChange = function (i, val) {
     }
     // Re-render to update hashes and invalidate subsequent blocks
     renderChain();
-    // Mark this block and subsequent ones as tampered in the data model
+    // Debounced invalidation: wait until user stops typing before marking invalid,
+    // so the UI doesn't immediately shake while the user is entering data.
+    const DEBOUNCE_MS = 900;
     for (let j = i; j < blocks.length; j++) {
-        blocks[j].invalid = true;
+        // clear any existing timer
+        if (blocks[j].invalidTimer) {
+            clearTimeout(blocks[j].invalidTimer);
+            blocks[j].invalidTimer = null;
+        }
+        // schedule invalidation after pause
+        blocks[j].invalidTimer = setTimeout(() => {
+            blocks[j].invalid = true;
+            blocks[j].invalidTimer = null;
+            renderChain();
+        }, DEBOUNCE_MS);
     }
-    // Re-render to apply invalid styles via renderChain
-    renderChain();
 };
 window.mineChainBlock = function (i) {
     const blk = blocks[i];
@@ -268,9 +280,22 @@ window.mineChainBlock = function (i) {
                 // clear invalid flag in data model and re-render
                 if (blocks[i]) {
                     blocks[i].invalid = false;
+                    // clear any pending invalidation timer for this block so mining keeps it valid
+                    if (blocks[i].invalidTimer) {
+                        clearTimeout(blocks[i].invalidTimer);
+                        blocks[i].invalidTimer = null;
+                    }
                 }
                 renderChain();
-                onChainDataChange(i, blk.data); // Trigger update for subsequent blocks
+                // Update subsequent blocks (propagate previousHash etc.)
+                onChainDataChange(i, blk.data); // This schedules debounced invalidation for j >= i
+                // ensure the just-mined block does not get re-invalidated by that scheduling
+                if (blocks[i] && blocks[i].invalidTimer) {
+                    clearTimeout(blocks[i].invalidTimer);
+                    blocks[i].invalidTimer = null;
+                    blocks[i].invalid = false;
+                    renderChain();
+                }
                 return;
             }
         }
