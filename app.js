@@ -211,9 +211,8 @@ function renderChain() {
                     blocks[i].mining = true;
                     // disable button visually
                     btnMine.disabled = true;
-                    // prevent default focus/blur side-effects
-                    e.preventDefault();
-                    mineChainBlock(i);
+                    // start mining asynchronously to avoid race with focus/blur events
+                    setTimeout(() => mineChainBlock(i), 0);
                 }
             });
         }
