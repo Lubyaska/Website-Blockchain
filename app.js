@@ -187,19 +187,31 @@ function renderChain() {
         const ta = blockEl.querySelector(`#data-${i}`);
         if (ta) {
             ta.value = blk.data || "";
-            ta.addEventListener('change', (e) => onChainDataChange(i, e.target.value));
+            // If block is currently mining, ignore change resets
+            ta.addEventListener('change', (e) => {
+                if (blocks[i] && blocks[i].mining) {
+                    // only update data, do not reset nonce/hash/timestamp while mining
+                    blocks[i].data = e.target.value;
+                    return;
+                }
+                onChainDataChange(i, e.target.value);
+            });
         }
         const btnMine = blockEl.querySelector('button.mine');
         if (btnMine) {
-            // Use pointerdown so we capture textarea value BEFORE it loses focus and triggers 'change' which would re-render.
+            // reflect mining state in disabled attribute
+            btnMine.disabled = !!blk.mining;
+            // Start mining on pointerdown so we capture textarea value before blur/change
             btnMine.addEventListener('pointerdown', (e) => {
                 if (ta) {
                     blocks[i].data = ta.value;
                 }
-            });
-            // Start mining on click (after pointerdown has captured the value).
-            btnMine.addEventListener('click', (e) => {
-                mineChainBlock(i);
+                // start mining immediately if not already mining
+                if (!blocks[i].mining) {
+                    // prevent default to avoid double activation
+                    e.preventDefault();
+                    mineChainBlock(i);
+                }
             });
         }
         blockElements.push(blockEl);
@@ -226,6 +238,7 @@ function addChainBlock() {
         nonce: 0,
         hash: "",
         invalid: false,
+        mining: false,
     };
     blocks.push(blk);
     renderChain(); // Re-render the entire chain
@@ -233,6 +246,11 @@ function addChainBlock() {
     if (newBlock) newBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 window.onChainDataChange = function (i, val) {
+    // If this block is currently mining, only update the data field and don't reset mining fields.
+    if (blocks[i] && blocks[i].mining) {
+        blocks[i].data = val;
+        return;
+    }
     blocks[i].data = val;
     blocks[i].nonce = 0;
     blocks[i].timestamp = "";
@@ -259,6 +277,8 @@ window.mineChainBlock = function (i) {
     blk.timestamp = new Date().toLocaleString("en-US", {
         timeZone: "Asia/Jakarta",
     });
+    // mark mining state so change handlers won't reset this block while mining
+    if (blocks[i]) blocks[i].mining = true;
     const t0 = performance.now();
     const status = document.getElementById(`status-${i}`);
     const ndiv = document.getElementById(`nonce-${i}`);
@@ -291,6 +311,8 @@ window.mineChainBlock = function (i) {
                 blocks[i].nonce = blk.nonce;
                 blocks[i].hash = blk.hash;
                 blocks[i].timestamp = blk.timestamp;
+                // clear mining flag
+                blocks[i].mining = false;
                 renderChain();
                 // update next block's previousHash so UI reflects the new chain
                 if (blocks[i + 1]) {
